@@ -55,6 +55,7 @@
 
 #include "DNA_ID.h"
 #include "DNA_image_types.h"
+#include "DNA_lamp_types.h"
 #include "DNA_object_types.h"
 #include "DNA_packedFile_types.h"
 #include "DNA_scene_types.h"
@@ -883,9 +884,6 @@ static void do_info_filemenu(void *arg, int event)
 	case 13:
 		exit_usiblender();
 		break;
-	case 14:
-		G.fileflags ^= G_FILE_NO_UI;
-		break;
 	case 15:	/* recover previous session */
 		{
 			extern short winqueue_break; /* editscreen.c */
@@ -926,14 +924,6 @@ static uiBlock *info_filemenu(void *arg_unused)
 	uiDefIconTextBut(block, BUTM, 1, ICON_BLANK1, "Open...|F1",				0, yco-=20, menuwidth, 19, NULL, 0.0, 0.0, 1, 1, "");
 	uiDefIconTextBut(block, BUTM, 1, ICON_BLANK1, "Reopen Last|Ctrl O",				0, yco-=20, menuwidth, 19, NULL, 0.0, 0.0, 1, 2, "");
 	uiDefIconTextBut(block, BUTM, 1, ICON_BLANK1, "Recover Last Session",				0, yco-=20, menuwidth, 19, NULL, 0.0, 0.0, 1, 15, "");
-
-	uiDefBut(block, SEPR, 0, "",					0, yco-=6, menuwidth, 6, NULL, 0.0, 0.0, 0, 0, "");
-
-	if(G.fileflags & G_FILE_NO_UI) {
-		uiDefIconTextBut(block, BUTM, 1, ICON_CHECKBOX_DEHLT, "Load UI",	 0, yco-=20, menuwidth, 19, NULL, 0.0, 0.0, 1, 14, "");
-	} else {
-		uiDefIconTextBut(block, BUTM, 1, ICON_CHECKBOX_HLT, "Load UI",	 	0, yco-=20, menuwidth, 19, NULL, 0.0, 0.0, 1, 14, "");
-	}
 
 	uiDefBut(block, SEPR, 0, "",					0, yco-=6, menuwidth, 6, NULL, 0.0, 0.0, 0, 0, "");
 
@@ -1212,7 +1202,6 @@ static uiBlock *info_add_metamenu(void *arg_unused)
 		
 	return block;
 }
-
 
 void do_info_addmenu(void *arg, int event)
 {
