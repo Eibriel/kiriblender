@@ -477,7 +477,14 @@ typedef struct UserDef {
 	float gpencil_new_layer_col[4]; /* default color for newly created Grease Pencil layers */
 
 	short tweak_threshold;
-	short pad3;
+	
+    /* stereoscopy 3D display */
+	short stereo_flag;
+	float stereo_epilepsy_interval; /* preferred interval in seconds for Dr. Epilepsy stereo method */
+	char stereo_display; /* stereo method for the user display */
+	char stereo_anaglyph_type; /* anaglyph scheme for the user display */
+	char stereo_interlace_type;  /* interlace type for the user display */
+	char pad3;
 
 	char author[80];	/* author name for file formats supporting it */
 
