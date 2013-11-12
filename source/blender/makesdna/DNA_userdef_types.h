@@ -776,6 +776,37 @@ typedef enum eImageDrawMethod {
 	IMAGE_DRAW_METHOD_DRAWPIXELS = 3,
 } eImageDrawMethod;
 
+/* UserDef.stereo_display */
+typedef enum eStereoDisplayMode {
+	S3D_DISPLAY_ANAGLYPH    = 0,
+	/* S3D_DISPLAY_BLURAY      = 1, */
+	S3D_DISPLAY_EPILEPSY    = 2,
+	S3D_DISPLAY_INTERLACE   = 3,
+	S3D_DISPLAY_PAGEFLIP    = 4,
+	S3D_DISPLAY_SIDEBYSIDE  = 5,
+	S3D_DISPLAY_TOPBOTTOM   = 6,
+} eStereoDisplayMode;
+
+/* UserDef.stereo_flag */
+typedef enum eStereoFlag {
+	S3D_INTERLACE_SWAP        = (1 << 0),
+	S3D_SIDEBYSIDE_CROSSEYED  = (1 << 1),
+} eStereoFlag;
+
+/* UserDef.stereo_anaglyph_type */
+typedef enum eStereoAnaglyphType {
+	S3D_ANAGLYPH_REDCYAN = 0,
+	S3D_ANAGLYPH_GREENMAGENTA = 1,
+	S3D_ANAGLYPH_YELLOWBLUE = 2,
+} eAnaglyphType;
+
+/* UserDef.stereo_interlace_type */
+typedef enum eStereoInterlaceType {
+	S3D_INTERLACE_ROW = 0,
+	S3D_INTERLACE_COLUMN = 1,
+	S3D_INTERLACE_CHECKERBOARD = 2,
+} eInterlaceType;
+
 #ifdef __cplusplus
 }
 #endif
