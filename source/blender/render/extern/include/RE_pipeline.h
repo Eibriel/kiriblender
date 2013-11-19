@@ -327,7 +327,7 @@ int RE_layers_have_name(struct RenderResult *result);
 void RE_Database_Baking(struct Render *re, struct Main *bmain, struct Scene *scene, unsigned int lay, const int type, struct Object *actob);
 
 void RE_DataBase_GetView(struct Render *re, float mat[4][4]);
-void RE_GetCameraWindow(struct Render *re, struct Object *camera, int frame, float mat[4][4]);
+void RE_GetCameraWindow(struct Render *re, struct Object *camera, int frame, float mat[4][4], bool left);
 struct Scene *RE_GetScene(struct Render *re);
 
 int RE_is_rendering_allowed(struct Scene *scene, struct Object *camera_override, struct ReportList *reports);

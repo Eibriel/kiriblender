@@ -142,6 +142,7 @@ static void screen_opengl_render_apply(OGLRender *oglrender)
 	bool draw_bgpic = true;
 	bool draw_sky = (scene->r.alphamode == R_ADDSKY);
 	unsigned char *rect = NULL;
+	bool left;
 
 	rr = RE_AcquireResultRead(oglrender->re);
 
@@ -188,7 +189,12 @@ static void screen_opengl_render_apply(OGLRender *oglrender)
 		if (rv3d->persp == RV3D_CAMOB && v3d->camera) {
 			/*int is_ortho = scene->r.mode & R_ORTHO;*/
 			camera = v3d->camera;
-			RE_GetCameraWindow(oglrender->re, camera, scene->r.cfra, winmat);
+			
+			if (v3d->stereo_camera != STEREO_3D_ID)
+			    v3d->eye = v3d->stereo_camera;
+			
+			left = v3d->eye == STEREO_LEFT_ID;
+			RE_GetCameraWindow(oglrender->re, camera, scene->r.cfra, winmat, left);
 			
 		}
 		else {

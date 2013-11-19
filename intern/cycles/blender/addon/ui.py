@@ -440,7 +440,6 @@ class CyclesRender_PT_views(CyclesButtonsPanel, Panel):
         rd = scene.render
         rv = rd.views.active
 
-
         layout.active = rd.use_multiple_views
         basic_stereo = rd.views_setup == 'SETUP_BASIC'
 
@@ -453,7 +452,8 @@ class CyclesRender_PT_views(CyclesButtonsPanel, Panel):
 
             row = layout.row()
             row.label(text="File Suffix:")
-            row.prop(rv, "file_suffix", text="")
+            if rv != None:
+                row.prop(rv, "file_suffix", text="")
 
         else:
             row = layout.row()
@@ -469,7 +469,8 @@ class CyclesRender_PT_views(CyclesButtonsPanel, Panel):
 
             row = layout.row()
             row.label(text="Camera Suffix:")
-            row.prop(rv, "camera_suffix", text="")
+            if rv != None:
+                row.prop(rv, "camera_suffix", text="")
 
 
 class Cycles_PT_post_processing(CyclesButtonsPanel, Panel):
