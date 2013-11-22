@@ -641,7 +641,7 @@ void BKE_camera_stereo_matrices(Object *camera, float viewmat[4][4], float *shif
 	}
 	
 	/* apply */
-	mul_m4_m4m4( tmpviewmat, transmat, tmpviewmat) ;
+	/*mul_m4_m4m4( tmpviewmat, transmat, tmpviewmat) ;*/
 
 	/* copy  */
 	copy_m4_m4(viewmat, tmpviewmat);

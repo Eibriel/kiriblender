@@ -530,71 +530,11 @@ void RE_SetPixelSize(Render *re, float pixsize)
 	re->viewdy = re->ycor * pixsize;
 }
 
-void RE_GetCameraWindow(struct Render *re, struct Object *camera, int frame, float mat[4][4], bool left)
+void RE_GetCameraWindow(struct Render *re, struct Object *camera, int frame, float mat[4][4])
 {
-	/*STEREO*/
-	Camera *data = (Camera *)camera->data;
-	float interocular_distance, convergence_distance, angle;
-	short convergence_mode;
-	float tmpviewmat[4][4];
-	float shift;
-
-	float transmat[4][4] = {
-	      {1,0,0,0},
-	      {0,1,0,0},
-	      {0,0,1,0},
-	      {0,0,0,1} };
-	      
-	interocular_distance = data->stereo.interocular_distance;
-	convergence_distance = data->stereo.convergence_distance;
-	convergence_mode = data->stereo.convergence_mode;
-	
-	/**/
 	re->r.cfra = frame;
-	
-	/* Shift */
-	shift = data->shiftx ;
-	if (ELEM(convergence_mode, CAM_S3D_OFFAXIS, CAM_S3D_PARALLEL)) {
-		if (left)
-			data->shiftx = ((interocular_distance / data->sensor_x) * (data->lens / convergence_distance)) * 0.5;
-		else
-			data->shiftx = ((interocular_distance / data->sensor_x) * (data->lens / convergence_distance)) * -0.5;
-	}
 	RE_SetCamera(re, camera);
-	data->shiftx = shift ;
-	
-	copy_m4_m4(tmpviewmat, re->winmat);
-	
-	
-	//invert_m4_m4(tmpviewmat, re->winmat);
-
-	/* rotate */
-	if (convergence_mode == CAM_S3D_TOE) {
-		angle = atan((interocular_distance * 0.5) / convergence_distance);
-
-		if (left)
-			angle = -angle;
-
-		transmat[0][0] = cos(angle);
-		transmat[2][0] = -sin(angle);
-		transmat[0][2] = sin(angle);
-		transmat[2][2] = cos(angle);
-	}
-
-	/* move */
-	if (left) {
-		transmat[3][0] = interocular_distance * 0.5 ;
-	}
-	else {
-		transmat[3][0] = interocular_distance * -0.5 ;
-	}
-	
-	/* apply */
-	mul_m4_m4m4( tmpviewmat, transmat, tmpviewmat) ;
-	
-	/* copy */
-	//copy_m4_m4(mat, re->winmat);
-	copy_m4_m4(mat, tmpviewmat);
+	copy_m4_m4(mat, re->winmat);
 }
 
 /* ~~~~~~~~~~~~~~~~ part (tile) calculus ~~~~~~~~~~~~~~~~~~~~~~ */

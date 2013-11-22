@@ -41,6 +41,7 @@
 #include "BLI_utildefines.h"
 #include "BLI_jitter.h"
 
+#include "DNA_camera_types.h"
 #include "DNA_scene_types.h"
 #include "DNA_object_types.h"
 #include "DNA_world_types.h"
@@ -133,6 +134,7 @@ static void screen_opengl_render_apply(OGLRender *oglrender)
 	RegionView3D *rv3d = oglrender->rv3d;
 	RenderResult *rr;
 	Object *camera = NULL;
+	Camera *data = NULL;
 	ImBuf *ibuf;
 	void *lock;
 	float winmat[4][4];
@@ -143,6 +145,8 @@ static void screen_opengl_render_apply(OGLRender *oglrender)
 	bool draw_sky = (scene->r.alphamode == R_ADDSKY);
 	unsigned char *rect = NULL;
 	bool left;
+	float interocular_distance, convergence_distance, shift;
+	short convergence_mode;
 
 	rr = RE_AcquireResultRead(oglrender->re);
 
@@ -189,13 +193,26 @@ static void screen_opengl_render_apply(OGLRender *oglrender)
 		if (rv3d->persp == RV3D_CAMOB && v3d->camera) {
 			/*int is_ortho = scene->r.mode & R_ORTHO;*/
 			camera = v3d->camera;
-			
+			data = (Camera *) camera->data;
+			interocular_distance = data->stereo.interocular_distance;
+			convergence_distance = data->stereo.convergence_distance;
+			convergence_mode = data->stereo.convergence_mode;
+
 			if (v3d->stereo_camera != STEREO_3D_ID)
 			    v3d->eye = v3d->stereo_camera;
 			
 			left = v3d->eye == STEREO_LEFT_ID;
-			RE_GetCameraWindow(oglrender->re, camera, scene->r.cfra, winmat, left);
 			
+			shift = data->shiftx ;
+			if (convergence_mode == CAM_S3D_OFFAXIS) {
+				  if (left)
+					  data->shiftx = ((interocular_distance / data->sensor_x) * (data->lens / convergence_distance)) * 0.5;
+				  else
+					  data->shiftx = ((interocular_distance / data->sensor_x) * (data->lens / convergence_distance)) * -0.5;
+			}
+
+			RE_GetCameraWindow(oglrender->re, camera, scene->r.cfra, winmat);
+			data->shiftx = shift ;
 		}
 		else {
 			rctf viewplane;

@@ -2530,6 +2530,16 @@ CustomDataMask ED_view3d_screen_datamask(bScreen *screen)
 void ED_view3d_update_viewmat(Scene *scene, View3D *v3d, ARegion *ar, float viewmat[4][4], float winmat[4][4])
 {
 	RegionView3D *rv3d = ar->regiondata;
+	Object *camera = (Object *)v3d->camera;
+	Camera *data = (Camera *)camera->data;
+	float transmat[4][4] = {
+		{1,0,0,0},
+		{0,1,0,0},
+		{0,0,1,0},
+		{0,0,0,1} };
+	float interocular_distance, convergence_distance, angle;
+	short convergence_mode;
+	bool left;
 
 	/* setup window matrices */
 	if (winmat)
@@ -2542,6 +2552,39 @@ void ED_view3d_update_viewmat(Scene *scene, View3D *v3d, ARegion *ar, float view
 		copy_m4_m4(rv3d->viewmat, viewmat);
 	else
 		setviewmatrixview3d(scene, v3d, rv3d);  /* note: calls BKE_object_where_is_calc for camera... */
+
+	interocular_distance = data->stereo.interocular_distance;
+	convergence_distance = data->stereo.convergence_distance;
+	convergence_mode = data->stereo.convergence_mode;
+
+	if (v3d->stereo_camera != STEREO_3D_ID)
+		v3d->eye = v3d->stereo_camera;
+	left = v3d->eye == STEREO_LEFT_ID;
+
+	/* rotate */
+
+	if (convergence_mode == CAM_S3D_TOE) {
+		angle = atan((interocular_distance * 0.5) / convergence_distance);
+
+		if (left){
+			angle = -angle;
+			transmat[0][0] = cos(angle);
+			transmat[2][0] = -sin(angle);
+			transmat[0][2] = sin(angle);
+			transmat[2][2] = cos(angle);
+		}
+	}
+
+	/* move */
+	if (left) {
+		transmat[3][0] = interocular_distance * 0.5 ;
+	}
+	else {
+		transmat[3][0] = interocular_distance * -0.5 ;
+	}
+
+	/* apply */
+	mul_m4_m4m4( rv3d->viewmat, transmat, rv3d->viewmat) ;
 
 	/* update utilitity matrices */
 	mul_m4_m4m4(rv3d->persmat, rv3d->winmat, rv3d->viewmat);
