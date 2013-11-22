@@ -2762,7 +2762,7 @@ class VIEW3D_PT_view3d_stereo(Panel):
     bl_region_type = 'UI'
     bl_label = "Stereoscopy"
     bl_options = {'DEFAULT_CLOSED'}
-    COMPAT_ENGINES = {'BLENDER_RENDER'}
+    COMPAT_ENGINES = {'BLENDER_RENDER','CYCLES'}
 
     @classmethod
     def poll(cls, context):
